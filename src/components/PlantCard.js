@@ -1,22 +1,36 @@
 import React from "react";
 
-function PlantCard({ plant }) {
-  const {name, image, price} = plant;
-  const [stock, setStock] = React.useState(false)
+function PlantCard({ plant, onUpdate }) {
+  const {name, image, price, soldOut} = plant;
 
-  function click () {
-    setStock((stock) => !stock)
-  }
+  const handleSoldOut = (id) => {
+    const plantObj = {
+      soldOut: true
+    }
+    fetch(`http://localhost:6001/plants/${id}`,{
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'Application/JSON'
+      },
+      body: JSON.stringify(plantObj)
+    })
+    .then(response => response.json())
+    .then((plant) => onUpdate(plant))
+  }  
 
   return (
     <li className="card" data-testid="plant-item">
       <img src={image} alt={name} />
       <h4>{name}</h4>
-      <p>Price: {price}</p>
-      {true ? (
-        <button className="primary" onCLick={click}>In Stock</button>
+        <p>
+        {soldOut ? <span className="sold-out">Sold Out</span> : `Price: ${price}`}
+        </p>
+      {soldOut ? (
+        <button disabled>Out of Stock</button>
       ) : (
-        <button>Out of Stock</button>
+        <button className="primary" onClick={() => handleSoldOut(id)} >
+          In Stock
+        </button>
       )}
     </li>
   );

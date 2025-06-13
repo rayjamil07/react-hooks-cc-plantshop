@@ -13,9 +13,13 @@ function PlantPage() {
     fetch('http://localhost:6001/plants')
     .then(response => response.json())
     .then((plants) => setPlants(plants))
-  }, [])
+  }, []);
 
   const addPlant = (plantObj) => {
+    setPlants([...plants,plantObj])
+  }
+
+  const updatePlant = (plantObj) => {
     setPlants([...plants,plantObj])
   }
 
@@ -24,13 +28,14 @@ function PlantPage() {
 //  const deletePlant = (id) => {
 //   const updatedPlants = plants.filter((plant) => plant.id !== id)
 //   setPlants(updatedPlants)
+
 //  }
 
   return (
     <main>
       <NewPlantForm onAdd={addPlant}/>
       <Search search={search} setSearch={setSearch}/>
-      <PlantList plants={updatedPlants}/>
+      <PlantList plants={updatedPlants} onUpdate={updatePlant}/>
     </main>
   );
 }
